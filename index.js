@@ -10,13 +10,18 @@ app.get("/get-products", async (req, res) => {
     const url = req.query.url;
     if (!url) return res.json({ error: "URL missing" });
 
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
+
     const $ = cheerio.load(response.data);
 
     const products = [];
 
-    $(".product-item, .product, .item").each((i, el) => {
-      const name = $(el).find(".product-title").text().trim();
+    $(".product").each((i, el) => {
+      const name = $(el).find(".title").text().trim();
       const price = $(el).find(".price").text().trim();
       const img = $(el).find("img").attr("src");
 
